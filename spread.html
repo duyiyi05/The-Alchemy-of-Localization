@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Spread the Cards</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page page--spread">
+  <div class="bg"></div>
+
+  <main class="spreadStage">
+    <header class="spreadHeader">
+      <div class="kicker">RITUAL IN NINE ARCANA</div>
+      <h1 class="spell">Spread. Read. Build.</h1>
+      <p class="deckline">Nine cards. One transmutation: from language to infrastructure.</p>
+    </header>
+
+    <section class="spreadArea" aria-label="Tarot spread">
+      <!-- deck pile -->
+      <div class="deck" id="deck" aria-hidden="true">
+        <div class="deck__card"></div>
+        <div class="deck__card"></div>
+        <div class="deck__card"></div>
+      </div>
+
+      <!-- 9 cards (placeholders until you upload /assets/tarot-0x.jpg) -->
+      <div class="cardsGrid" id="cardsGrid" aria-label="Pick a card" data-state="hidden">
+        <button class="tarot" data-card="1" aria-label="Pick card 1"><span>Tarot 01</span></button>
+        <button class="tarot" data-card="2" aria-label="Pick card 2"><span>Tarot 02</span></button>
+        <button class="tarot" data-card="3" aria-label="Pick card 3"><span>Tarot 03</span></button>
+        <button class="tarot" data-card="4" aria-label="Pick card 4"><span>Tarot 04</span></button>
+        <button class="tarot" data-card="5" aria-label="Pick card 5"><span>Tarot 05</span></button>
+        <button class="tarot" data-card="6" aria-label="Pick card 6"><span>Tarot 06</span></button>
+        <button class="tarot" data-card="7" aria-label="Pick card 7"><span>Tarot 07</span></button>
+        <button class="tarot" data-card="8" aria-label="Pick card 8"><span>Tarot 08</span></button>
+        <button class="tarot" data-card="9" aria-label="Pick card 9"><span>Tarot 09</span></button>
+      </div>
+    </section>
+
+    <div class="spreadActions">
+      <button class="btn btn--gold" id="spreadBtn">Spread the Cards</button>
+      <a class="btn btn--ghost" href="index.html">Return to the Cover</a>
+    </div>
+
+    <p class="hint" id="hint">Click <strong>Spread the Cards</strong>. Then choose one.</p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

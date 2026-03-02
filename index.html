@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Alchemy of Localization</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page page--cover">
+  <div class="bg"></div>
+
+  <!-- floating corner candles (png optional) -->
+  <div class="cornerCandles" aria-hidden="true">
+    <div class="candle candle--tl">
+      <div class="flame"></div>
+    </div>
+    <div class="candle candle--br">
+      <div class="flame"></div>
+    </div>
+  </div>
+
+  <main class="centerStage">
+    <section class="stack" aria-label="Cover">
+      <div class="stack__card stack__card--back"></div>
+      <div class="stack__card stack__card--mid"></div>
+
+      <div class="stack__card stack__card--front" id="coverCard">
+        <!-- Optional photo face; if you add assets/cover-front.jpg later it will show -->
+        <div class="coverPhoto" aria-hidden="true"></div>
+
+        <div class="coverFace">
+          <h1 class="title">THE ALCHEMY<br/>OF<br/>LOCALIZATION</h1>
+          <p class="subtitle">A Ritual in Nine Arcana</p>
+
+          <a class="btn btn--gold" id="beginReading" href="spread.html">Begin the Reading</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
