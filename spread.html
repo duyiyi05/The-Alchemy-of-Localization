@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Spread is Cast</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page page--spread">
+  <div class="bg"></div>
+  <div class="particles" aria-hidden="true"></div>
+  <div class="petalLayer" id="petalLayer" aria-hidden="true"></div>
+
+  <div class="candleField" aria-hidden="true">
+    <div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div class="flame"></div></div>
+  </div>
+
+  <main class="spreadStage">
+    <header class="spreadHeader">
+      <p class="kicker">THE SPREAD IS CAST</p>
+      <h1 class="title">Spread. Read. Build.</h1>
+      <p class="deckline">Each card reveals a stage in the art of localization project management. Touch a card to unveil its meaning, or begin the reading from the first revelation.</p>
+      <p class="lore">Not all journeys begin with maps. Some begin with revelation.</p>
+    </header>
+
+    <section class="spreadArea" aria-label="Tarot spread">
+      <div class="cardsGrid" id="cardsGrid" data-state="hidden">
+        <button class="tarot" data-card="1" data-whisper="Every project begins with a question."><span>I — The Summons</span></button>
+        <button class="tarot" data-card="2" data-whisper="Direction is the first protection against chaos."><span>II — The Compass</span></button>
+        <button class="tarot" data-card="3" data-whisper="Complexity speaks in many tongues."><span>III — The Tower of Babel</span></button>
+        <button class="tarot" data-card="4" data-whisper="No launch is ever solitary."><span>IV — The Chain of Hands</span></button>
+        <button class="tarot" data-card="5" data-whisper="Rhythm is strategy wearing a clock."><span>V — The Clockwork Wheel</span></button>
+        <button class="tarot" data-card="6" data-whisper="Not all accuracy feels true."><span>VI — The Mirror of Meaning</span></button>
+        <button class="tarot" data-card="7" data-whisper="Invisible systems decide visible outcomes."><span>VII — The Hidden Thread</span></button>
+        <button class="tarot" data-card="8" data-whisper="Judgment is balance under pressure."><span>VIII — The Balancing Scales</span></button>
+        <button class="tarot" data-card="9" data-whisper="Delivery is where intention meets the world."><span>IX — The World Unveiled</span></button>
+      </div>
+    </section>
+
+    <p class="hint" id="hint">Click <strong>Spread the Cards</strong> to begin the ritual.</p>
+
+    <div class="spreadActions">
+      <button class="btn btn--gold" id="spreadBtn">Spread the Cards</button>
+      <a class="btn btn--gold-soft" id="startReading" href="reading.html?card=1">Start Reading</a>
+      <a class="btn btn--ghost" href="index.html">Return to Cover</a>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
