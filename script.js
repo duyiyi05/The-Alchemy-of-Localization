@@ -160,9 +160,13 @@ function seedDust(container, count = 34) {
   });
 
   setTimeout(() => {
+    grid.dataset.state = "shuffling";
+  }, 420);
+
+  setTimeout(() => {
     grid.dataset.state = "spread";
     if (ritual) ritual.textContent = "The reading is ready.";
-  }, 1200);
+  }, 2500);
 
   startBtn?.addEventListener("click", () => {
     sessionStorage.setItem("readingStarted", "1");
@@ -224,7 +228,7 @@ function seedDust(container, count = 34) {
     card.classList.add("tarot--flipping");
     setTimeout(() => {
       window.location.href = `reading.html?card=${card.dataset.card}`;
-    }, 430);
+    }, 900);
   });
 })();
 
@@ -301,16 +305,16 @@ function seedDust(container, count = 34) {
 
   function buildFinalCards() {
     if (!finalCards || finalCards.children.length) return;
-    ARCANA.forEach((card) => {
-      const chip = document.createElement("span");
-      chip.className = "finalReading__chip";
-      chip.textContent = card.title;
-      finalCards.appendChild(chip);
+    ARCANA.forEach((card, i) => {
+      const cardFace = document.createElement("article");
+      cardFace.className = "finalReading__miniCard";
+      cardFace.innerHTML = `<p class="finalReading__miniSigil">${i + 1}</p><p>${card.title}</p>`;
+      finalCards.appendChild(cardFace);
     });
-    const hiddenChip = document.createElement("span");
-    hiddenChip.className = "finalReading__chip finalReading__chip--x";
-    hiddenChip.textContent = "Arcana X — The Invisible Conductor";
-    finalCards.appendChild(hiddenChip);
+    const hiddenFace = document.createElement("article");
+    hiddenFace.className = "finalReading__miniCard finalReading__miniCard--x";
+    hiddenFace.innerHTML = '<p class="finalReading__miniSigil">X</p><p>Arcana X — The Invisible Conductor</p>';
+    finalCards.appendChild(hiddenFace);
   }
 
   function startHiddenSequence() {
@@ -324,6 +328,7 @@ function seedDust(container, count = 34) {
     closing.hidden = false;
     closing.dataset.phase = "summoning";
     seedDust(closingDust);
+    if (candleWhisper) candleWhisper.textContent = "The final card has spoken.";
 
     if (closingPetals && !petalTimer) {
       petalTimer = window.setInterval(() => {

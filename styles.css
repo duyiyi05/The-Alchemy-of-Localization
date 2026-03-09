@@ -124,13 +124,26 @@ a{color:inherit}
 .cardsGrid--spread[data-state='stacked'] .tarot:nth-child(2){--stack-rot:6deg}
 .cardsGrid--spread[data-state='stacked'] .tarot:nth-child(3){--stack-rot:-4deg}
 .cardsGrid--spread[data-state='stacked'] .tarot:nth-child(n+4){opacity:0}
-.cardsGrid--spread[data-state='spread'] .tarot{opacity:1;transform:translateY(0) rotate(0);animation:dealCard 500ms cubic-bezier(.22,.61,.36,1) both;animation-delay:calc(var(--i) * 55ms)}
+.cardsGrid--spread[data-state='shuffling'] .tarot{grid-area:1/1;opacity:.78;animation:stackShuffle 1500ms ease-in-out infinite;animation-delay:calc(var(--i) * 70ms)}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(1){--sx:-12px;--sy:-8px;--sr:-8deg}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(2){--sx:10px;--sy:5px;--sr:9deg}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(3){--sx:-7px;--sy:11px;--sr:-5deg}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(4){--sx:8px;--sy:-10px;--sr:7deg}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(5){--sx:-11px;--sy:3px;--sr:-7deg}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(6){--sx:12px;--sy:9px;--sr:6deg}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(7){--sx:-5px;--sy:-12px;--sr:-4deg}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(8){--sx:6px;--sy:7px;--sr:5deg}
+.cardsGrid--spread[data-state='shuffling'] .tarot:nth-child(9){--sx:0px;--sy:-5px;--sr:-2deg}
+.cardsGrid--spread[data-state='spread'] .tarot{opacity:1;transform:translateY(0) rotate(0);animation:dealCard 580ms cubic-bezier(.22,.61,.36,1) both;animation-delay:calc(var(--i) * 55ms)}
 @keyframes dealCard{from{opacity:0;transform:translateY(-24px) scale(.93)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes stackShuffle{0%{transform:translate(0,0) rotate(0deg) scale(1)}50%{transform:translate(var(--sx,8px),var(--sy,-6px)) rotate(var(--sr,5deg)) scale(1.01)}100%{transform:translate(calc(var(--sx,8px) * -0.6),calc(var(--sy,-6px) * -0.5)) rotate(calc(var(--sr,5deg) * -0.45)) scale(.995)}}
 
 .page--spread .tarot{aspect-ratio:3/5;border:1px solid rgba(198,166,91,.38);border-radius:16px;padding:0;position:relative;overflow:visible;cursor:pointer;box-shadow:0 22px 75px rgba(0,0,0,.58);background:linear-gradient(145deg,rgba(84,23,35,.7),rgba(9,2,4,.95));transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
-.page--spread .tarot::before{content:"";position:absolute;inset:9px;border-radius:12px;border:1px solid rgba(198,166,91,.24);background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.08),transparent 42%),radial-gradient(circle at 80% 86%,rgba(198,166,91,.19),transparent 48%),linear-gradient(160deg,rgba(12,2,5,.35),rgba(0,0,0,.64))}
+.page--spread .tarot::before{content:"";position:absolute;inset:9px;border-radius:12px;border:1px solid rgba(198,166,91,.24);background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.08),transparent 42%),radial-gradient(circle at 80% 86%,rgba(198,166,91,.19),transparent 48%),linear-gradient(160deg,rgba(12,2,5,.35),rgba(0,0,0,.64));transition:filter .25s ease,opacity .25s ease}
 .page--spread .tarot::after{content:attr(data-whisper);position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);min-width:220px;max-width:290px;padding:8px 10px;background:rgba(9,4,5,.95);border:1px solid rgba(198,166,91,.38);border-radius:10px;color:var(--ivory-soft);font-size:11px;line-height:1.35;letter-spacing:.02em;opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;box-shadow:0 15px 40px rgba(0,0,0,.45);z-index:6}
-.page--spread .tarot:hover,.page--spread .tarot:focus-visible{transform:translateY(-6px);box-shadow:0 28px 95px rgba(0,0,0,.68),0 0 28px rgba(198,166,91,.2);border-color:rgba(198,166,91,.66);outline:none}
+.page--spread .tarot:hover,.page--spread .tarot:focus-visible{transform:translateY(-8px) scale(1.02);box-shadow:0 30px 98px rgba(0,0,0,.68),0 0 34px rgba(198,166,91,.28);border-color:rgba(198,166,91,.7);outline:none}
+.page--spread .tarot:hover::before,.page--spread .tarot:focus-visible::before{filter:brightness(1.06) saturate(1.08)}
+.page--spread .tarot:hover .tarot__sigil,.page--spread .tarot:focus-visible .tarot__sigil{text-shadow:0 0 10px rgba(198,166,91,.45)}
 .page--spread .tarot:hover::after,.page--spread .tarot:focus-visible::after{opacity:1;transform:translateX(-50%) translateY(-2px)}
 .page--spread .tarot.has-img{background-size:cover;background-position:center;background-color:#1a070d}
 .page--spread .tarot.has-img::before{background:linear-gradient(to bottom,rgba(0,0,0,.02),rgba(0,0,0,.68));border-color:rgba(198,166,91,.2)}
@@ -171,8 +184,8 @@ a{color:inherit}
 
 .page--spread .tarot--chosen{animation:chosenPulse 1.5s ease-in-out infinite}
 @keyframes chosenPulse{0%,100%{box-shadow:0 22px 75px rgba(0,0,0,.58)}50%{box-shadow:0 28px 95px rgba(0,0,0,.68),0 0 28px rgba(198,166,91,.32)}}
-.page--spread .tarot--flipping{animation:cardFlip 420ms cubic-bezier(.22,.61,.36,1) both}
-@keyframes cardFlip{0%{transform:translateY(-6px) rotateY(0deg)}100%{transform:translateY(-12px) rotateY(80deg);opacity:.12}}
+.page--spread .tarot--flipping{animation:cardFlip 860ms cubic-bezier(.22,.61,.36,1) both;z-index:8}
+@keyframes cardFlip{0%{transform:translateY(-8px) scale(1.02) rotateY(0deg);opacity:1}55%{transform:translateY(-16px) scale(1.08) rotateY(88deg);opacity:.86}100%{transform:translateY(-20px) scale(1.1) rotateY(175deg);opacity:.12}}
 
 .progressDots{display:flex;gap:7px;margin:8px 0 14px}
 .progressDots span{width:10px;height:10px;border-radius:999px;border:1px solid rgba(198,166,91,.42);background:rgba(255,255,255,.05)}
@@ -201,9 +214,12 @@ a{color:inherit}
 .finalReading{margin:24px auto 0;max-width:760px;padding:20px;border:1px solid rgba(198,166,91,.3);border-radius:16px;background:rgba(5,2,3,.66);opacity:0;transform:translateY(14px);transition:opacity .8s ease,transform .8s ease}
 .finalReading.is-visible{opacity:1;transform:translateY(0)}
 .finalReading h3{margin:2px 0 10px;font-size:clamp(24px,3vw,34px)}
-.finalReading__cards{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0 8px}
-.finalReading__chip{padding:6px 11px;border-radius:999px;border:1px solid rgba(198,166,91,.36);background:rgba(0,0,0,.38);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
-.finalReading__chip--x{border-color:rgba(198,166,91,.75);box-shadow:0 0 18px rgba(198,166,91,.28)}
+.finalReading__allSecrets{margin:8px 0 12px;font-style:italic;color:rgba(244,234,223,.88)}
+.finalReading__cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;justify-content:center;margin:14px 0 8px}
+.finalReading__miniCard{padding:10px 8px;border-radius:12px;border:1px solid rgba(198,166,91,.34);background:linear-gradient(150deg,rgba(30,8,13,.9),rgba(8,2,4,.9));font-size:10px;letter-spacing:.04em;text-transform:uppercase;min-height:92px;display:flex;flex-direction:column;justify-content:center;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.finalReading__miniSigil{margin:0;color:var(--gold);font-size:11px;letter-spacing:.2em}
+.finalReading__miniCard p{margin:0;color:rgba(244,234,223,.88)}
+.finalReading__miniCard--x{border-color:rgba(198,166,91,.75);box-shadow:0 0 18px rgba(198,166,91,.22)}
 .finalReading__signature{margin-top:18px;font-size:13px;opacity:.85}
 
 @media (max-width:620px){
