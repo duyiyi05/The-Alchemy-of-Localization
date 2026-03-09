@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Spread is Cast</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page page--spread">
+  <div class="bg"></div>
+  <div class="particles" aria-hidden="true"></div>
+  <div class="petalLayer" id="petalLayer" aria-hidden="true"></div>
+
+  <div class="candleField candleField--spread" aria-hidden="true">
+    <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
+    <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
+  </div>
+
+  <main class="spreadStage">
+    <section class="spreadWindow" aria-label="The tarot spread">
+      <header class="spreadWindow__header">
+        <p class="kicker">The Spread is Cast</p>
+        <h1 class="title spreadWindow__title">The Spread is Cast</h1>
+        <p class="deckline">Choose a card… or let the cards choose you.</p>
+        <p class="lore" id="spreadRitualText">The cards must first be awakened.</p>
+      </header>
+
+      <section class="tarotTable" aria-label="Nine Arcana cards">
+        <div class="cardsGrid cardsGrid--spread" id="cardsGrid" data-state="stacked">
+          <button class="tarot tarot--back" data-card="1" data-whisper="Every journey begins the moment someone dares to ask the right question." aria-label="Arcana I The Summons"><span class="tarot__sigil">I</span><span class="tarot__label">The Summons</span></button>
+          <button class="tarot tarot--back" data-card="2" data-whisper="Direction is the difference between movement and progress." aria-label="Arcana II The Compass"><span class="tarot__sigil">II</span><span class="tarot__label">The Compass</span></button>
+          <button class="tarot tarot--back" data-card="3" data-whisper="Languages do not merely translate words — they reshape meaning." aria-label="Arcana III The Tower of Babel"><span class="tarot__sigil">III</span><span class="tarot__label">The Tower of Babel</span></button>
+          <button class="tarot tarot--back" data-card="4" data-whisper="No global project moves forward by one pair of hands alone." aria-label="Arcana IV The Chain of Hands"><span class="tarot__sigil">IV</span><span class="tarot__label">The Chain of Hands</span></button>
+          <button class="tarot tarot--back" data-card="5" data-whisper="Time is the silent force guiding every project toward its fate." aria-label="Arcana V The Clockwork Wheel"><span class="tarot__sigil">V</span><span class="tarot__label">The Clockwork Wheel</span></button>
+          <button class="tarot tarot--back" data-card="6" data-whisper="A translation is true only when meaning survives the journey." aria-label="Arcana VI The Mirror of Meaning"><span class="tarot__sigil">VI</span><span class="tarot__label">The Mirror of Meaning</span></button>
+          <button class="tarot tarot--back" data-card="7" data-whisper="Invisible systems hold the entire world of localization together." aria-label="Arcana VII The Hidden Thread"><span class="tarot__sigil">VII</span><span class="tarot__label">The Hidden Thread</span></button>
+          <button class="tarot tarot--back" data-card="8" data-whisper="Every project demands a choice between speed, cost, and perfection." aria-label="Arcana VIII The Balancing Scales"><span class="tarot__sigil">VIII</span><span class="tarot__label">The Balancing Scales</span></button>
+          <button class="tarot tarot--back" data-card="9" data-whisper="When languages align, a message finally belongs everywhere." aria-label="Arcana IX The World Unveiled"><span class="tarot__sigil">IX</span><span class="tarot__label">The World Unveiled</span></button>
+        </div>
+      </section>
+
+      <p class="deckline spreadLine">Localization is rarely visible to users. Yet it shapes every global experience.</p>
+      <p class="hint" id="spreadWhisper" aria-live="polite"></p>
+
+      <div class="spreadActions">
+        <a class="btn btn--gold" id="startReading" href="reading.html?card=1">Start the Reading</a>
+        <a class="btn btn--ghost" href="index.html">Return to Cover</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

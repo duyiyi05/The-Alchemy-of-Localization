@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Reading</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page page--reading">
+  <div class="bg"></div>
+  <div class="particles" aria-hidden="true"></div>
+  <div class="petalLayer" id="petalLayer" aria-hidden="true"></div>
+
+  <main class="readingStage">
+    <header class="readingHeader">
+      <h1 class="title">The Reading</h1>
+      <p class="subtitle">Choose your path through the nine arcana, or continue in order.</p>
+      <div class="readingActions">
+        <a class="btn btn--ghost" href="spread.html">Return to the Spread</a>
+        <a class="btn btn--ghost" href="index.html">Return to Cover</a>
+      </div>
+    </header>
+
+    <nav class="arcanaRail" id="arcanaRail" aria-label="Arcana navigation"></nav>
+
+    <section class="readingCard" id="readingCard" aria-live="polite">
+      <p class="progress" id="progress">Revelation 1 of 9</p>
+      <div class="progressDots" id="progressDots" aria-hidden="true"></div>
+      <div class="lensToggle" role="tablist" aria-label="Reading lens">
+        <button class="btn btn--gold-soft is-active" data-lens="tarot" type="button">🔮 Tarot Meaning</button>
+        <button class="btn btn--ghost" data-lens="real" type="button">🌍 Real Localization Example</button>
+      </div>
+      <h2 id="arcanaTitle">Arcana</h2>
+      <p class="prophecy" id="arcanaProphecy"></p>
+
+      <div class="detailBlock">
+        <h3 id="lensHeading">Meaning in Localization Project Management</h3>
+        <p id="arcanaMeaning"></p>
+      </div>
+
+      <div class="detailGrid">
+        <article class="detailBlock"><h3>What it reveals</h3><p id="arcanaReveals"></p></article>
+        <article class="detailBlock"><h3>Why it matters</h3><p id="arcanaMatters"></p></article>
+        <article class="detailBlock"><h3>How a localization PM acts here</h3><p id="arcanaActs"></p></article>
+      </div>
+
+      <div class="readingActions">
+        <button class="btn btn--gold-soft" id="prevArcana">Previous Arcana</button>
+        <button class="btn btn--gold" id="nextArcana">Reveal the Next Arcana</button>
+      </div>
+    </section>
+
+    <section class="closingScene" id="closingScene" hidden>
+      <div class="magic-dust" aria-hidden="true"></div>
+      <div class="closingScene__veil" aria-hidden="true"></div>
+      <div class="closingScene__candles" aria-hidden="true">
+        <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
+        <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
+      </div>
+      <div class="closingScene__text">
+        <p class="subtitle">The Reading Concludes</p>
+        <h2>The cards grow quiet now. Yet their message remains clear.</h2>
+        <p>Localization is not simply translation. It is the art of guiding meaning safely across languages, cultures, and worlds.</p>
+        <p>And every successful journey needs someone who can read the signs.</p>
+        <p>Duygu Taş — Localization Project Management | Language Operations | Multilingual Content Strategy</p>
+        <p>Email: your-email@example.com · LinkedIn: your-linkedin · Portfolio: your-portfolio</p>
+        <a class="btn btn--gold" href="spread.html">Enter the Next Reading</a>
+      </div>
+      <article class="oracleCard" id="oracleCard" hidden>
+        <p class="kicker">Arcana X — The Oracle</p>
+        <h3>Localization Project Manager</h3>
+        <p>Behind every successful global launch stands someone who sees the path before others do.</p>
+        <p>The Localization PM is the unseen guide — balancing languages, systems, teams, and time to ensure meaning reaches every market.</p>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
