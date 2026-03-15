@@ -52,26 +52,47 @@
 
     <section class="closingScene" id="closingScene" hidden>
       <div class="magic-dust" aria-hidden="true"></div>
+      <div class="closingPetals" id="closingPetals" aria-hidden="true"></div>
       <div class="closingScene__veil" aria-hidden="true"></div>
       <div class="closingScene__candles" aria-hidden="true">
         <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
         <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
       </div>
       <div class="closingScene__text">
-        <p class="subtitle">The Reading Concludes</p>
-        <h2>The cards grow quiet now. Yet their message remains clear.</h2>
-        <p>Localization is not simply translation. It is the art of guiding meaning safely across languages, cultures, and worlds.</p>
-        <p>And every successful journey needs someone who can read the signs.</p>
-        <p>Duygu Taş — Localization Project Management | Language Operations | Multilingual Content Strategy</p>
-        <p>Email: your-email@example.com · LinkedIn: your-linkedin · Portfolio: your-portfolio</p>
-        <a class="btn btn--gold" href="spread.html">Enter the Next Reading</a>
+        <p class="subtitle">The Ninth Arcana Settles</p>
+        <h2>The room grows still as one final influence stirs.</h2>
+        <p id="hiddenPrelude" class="hiddenPrelude" aria-live="polite"></p>
+
+        <button class="hiddenCard" id="hiddenCard" type="button" aria-label="Reveal Arcana X" hidden>
+          <span class="hiddenCard__inner">
+            <span class="hiddenCard__face hiddenCard__face--back">
+              <span class="kicker">Arcana X</span>
+              <strong>The Invisible Conductor</strong>
+            </span>
+            <span class="hiddenCard__face hiddenCard__face--front">
+              <span class="kicker">Arcana X — The Invisible Conductor</span>
+              <h3>“Every system needs someone who sees the entire pattern.”</h3>
+              <p>Localization projects appear to move through languages, systems, and teams on their own. But behind every successful launch is someone quietly holding the threads together.</p>
+              <p>They balance deadlines and quality.<br>They coordinate linguists, engineers, and stakeholders.<br>They resolve invisible risks before anyone else notices them.</p>
+              <p>They ensure that meaning survives the journey.</p>
+              <p>This final card represents the role that connects every arcana revealed in the reading.</p>
+              <p><strong>Localization Project Manager.</strong></p>
+            </span>
+          </span>
+        </button>
+
+        <p class="hiddenCardNote" id="hiddenCardNote" hidden>“Some roles appear only after the full reading is complete.”</p>
+        <p class="finalLastWhisper" id="finalLastWhisper" hidden>The last card has spoken.</p>
+
+        <div class="finalReading" id="finalReading" hidden>
+          <h3>The reading is complete.</h3>
+          <p>Every global experience depends on someone who understands how language, systems, and people move together.</p>
+          <div class="finalReading__cards" id="finalCards" aria-hidden="true"></div>
+          <p class="finalReading__closingWhisper">The cards grow quiet once more.</p>
+          <a class="btn btn--gold" href="spread.html">Close the Reading</a>
+          <p class="finalReading__signature">This reading was conducted by Duygu Taş.</p>
+        </div>
       </div>
-      <article class="oracleCard" id="oracleCard" hidden>
-        <p class="kicker">Arcana X — The Oracle</p>
-        <h3>Localization Project Manager</h3>
-        <p>Behind every successful global launch stands someone who sees the path before others do.</p>
-        <p>The Localization PM is the unseen guide — balancing languages, systems, teams, and time to ensure meaning reaches every market.</p>
-      </article>
     </section>
   </main>
 

@@ -160,9 +160,13 @@ function seedDust(container, count = 34) {
   });
 
   setTimeout(() => {
+    grid.dataset.state = "shuffling";
+  }, 420);
+
+  setTimeout(() => {
     grid.dataset.state = "spread";
     if (ritual) ritual.textContent = "The reading is ready.";
-  }, 1200);
+  }, 2500);
 
   startBtn?.addEventListener("click", () => {
     sessionStorage.setItem("readingStarted", "1");
@@ -224,7 +228,7 @@ function seedDust(container, count = 34) {
     card.classList.add("tarot--flipping");
     setTimeout(() => {
       window.location.href = `reading.html?card=${card.dataset.card}`;
-    }, 430);
+    }, 900);
   });
 })();
 
@@ -249,6 +253,9 @@ function seedDust(container, count = 34) {
   const oracleCard = document.getElementById("oracleCard");
 
   let lens = "tarot";
+  let hiddenSequenceStarted = false;
+  let hiddenCardOpened = false;
+  let petalTimer = null;
   let index = Math.max(0, Math.min(8, Number(new URLSearchParams(window.location.search).get("card") || 1) - 1));
 
   ARCANA.forEach((_, i) => {
@@ -285,6 +292,65 @@ function seedDust(container, count = 34) {
     progressDots?.querySelectorAll("span").forEach((el, i) => el.classList.toggle("is-active", i <= index));
     prevBtn.disabled = index === 0;
     nextBtn.textContent = index === 8 ? "Complete the Reading" : "Reveal the Next Arcana";
+  }
+
+  function buildFinalCards() {
+    if (!finalCards || finalCards.children.length) return;
+    ARCANA.forEach((card, i) => {
+      const cardFace = document.createElement("article");
+      const zoneClass = i < 5 ? "finalReading__miniCard--row1" : "finalReading__miniCard--row2";
+      cardFace.className = `finalReading__miniCard ${zoneClass}`;
+      cardFace.innerHTML = `<p class="finalReading__miniSigil">${i + 1}</p><p>${card.title}</p>`;
+      finalCards.appendChild(cardFace);
+    });
+    const hiddenFace = document.createElement("article");
+    hiddenFace.className = "finalReading__miniCard finalReading__miniCard--x";
+    hiddenFace.innerHTML = '<p class="finalReading__miniSigil">X</p><p>Arcana X — The Invisible Conductor</p>';
+    finalCards.appendChild(hiddenFace);
+  }
+
+  function startHiddenSequence() {
+    if (!closing || hiddenSequenceStarted) return;
+    hiddenSequenceStarted = true;
+    document.body.classList.add("is-reading-quiet");
+    readingCard?.classList.add("is-quiet");
+    readingHeader?.classList.add("is-quiet");
+    rail?.classList.add("is-quiet");
+
+    closing.hidden = false;
+    closing.dataset.phase = "summoning";
+    seedDust(closingDust);
+
+    if (closingPetals && !petalTimer) {
+      petalTimer = window.setInterval(() => {
+        const petal = document.createElement("span");
+        petal.className = "closingPetal";
+        petal.style.left = `${Math.random() * 100}%`;
+        petal.style.animationDuration = `${8.8 + Math.random() * 3.6}s`;
+        petal.style.animationDelay = `${Math.random() * 0.8}s`;
+        closingPetals.appendChild(petal);
+        setTimeout(() => petal.remove(), 14000);
+      }, 900);
+    }
+
+    requestAnimationFrame(() => closing.classList.add("is-revealed"));
+    closing.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    setTimeout(() => {
+      if (hiddenPrelude) {
+        hiddenPrelude.textContent = "Not all forces shaping the outcome are visible at the beginning.";
+      }
+    }, 900);
+
+    setTimeout(() => {
+      if (hiddenCard) {
+        hiddenCard.hidden = false;
+        hiddenCard.classList.add("is-risen");
+      }
+      closing.dataset.phase = "revealed";
+    }, 2300);
+
+    sessionStorage.setItem("readingCompleted", "1");
   }
 
   prevBtn.addEventListener("click", () => {

@@ -1,56 +1,632 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>The Spread is Cast</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>The Nine-Card Spread — The Localization Oracle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --deep:#06020f;--card-bg:#0b0520;--surface:#100828;--surface2:#18103a;
+  --gold:#c9a84c;--gold-lt:#e8c97a;--gold-dim:#7a6030;--gold-faint:rgba(201,168,76,0.12);
+  --parch:#f0e6cc;--parch-dim:rgba(240,230,204,0.48);
+  --mist:#a897d8;--rose:#c05580;--teal:#3aacac;
+  --div:rgba(201,168,76,0.16);--cw:178px;--ch:295px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--deep);overflow-x:hidden;font-family:'Raleway',sans-serif;color:var(--parch)}
+#starCanvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.page{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:2.5rem 1.25rem 6rem}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--gold-dim);font-size:10px;letter-spacing:.2em;text-decoration:none;text-transform:uppercase;margin-bottom:2rem;transition:color .2s}
+.back-link:hover{color:var(--gold)}
+.back-link::before{content:'←';font-size:12px}
+.header{text-align:center}
+.ornament{font-size:13px;color:var(--gold-dim);letter-spacing:.6em;opacity:.55;margin-bottom:1rem}
+h1{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,3.5vw,32px);color:var(--gold);letter-spacing:.08em;margin-bottom:.5rem}
+.subtitle{font-family:'IM Fell English',serif;font-style:italic;color:var(--parch-dim);font-size:clamp(12px,1.8vw,15px);margin-bottom:.75rem}
+.stage-legend{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:1.75rem}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.12em;color:var(--parch-dim);text-transform:uppercase}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.progress-row{display:flex;justify-content:center;gap:7px;margin-bottom:2.25rem}
+.pip{width:5px;height:5px;border-radius:50%;background:rgba(201,168,76,.18);transition:background .4s,transform .3s,box-shadow .3s}
+.pip.lit{background:var(--gold);transform:scale(1.5);box-shadow:0 0 8px rgba(201,168,76,.5)}
+.cards-grid{display:grid;grid-template-columns:repeat(3,var(--cw));gap:22px 16px;justify-content:center;margin-bottom:2.5rem}
+.stage-row-label{grid-column:1/-1;display:flex;align-items:center;gap:12px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dim);margin-top:6px;margin-bottom:-8px}
+.stage-row-label::before,.stage-row-label::after{content:'';flex:1;height:1px;background:var(--div)}
+.card-slot{width:var(--cw);height:var(--ch);perspective:1100px;cursor:pointer}
+.card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.34,1.08,.64,1);border-radius:14px}
+.card-slot.flipped .card-inner{transform:rotateY(180deg)}
+.card-slot:not(.flipped):hover .card-inner{transform:translateY(-6px) rotateY(7deg)}
+.card-slot.active-card .card-front{box-shadow:0 0 0 2px var(--gold),0 0 36px rgba(201,168,76,.2)}
+.card-face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.card-back{background:var(--card-bg);border:1px solid rgba(201,168,76,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.cb-frame{position:absolute;inset:7px;border:1px solid rgba(201,168,76,.12);border-radius:9px;
+  background:repeating-linear-gradient(45deg,rgba(201,168,76,.018) 0,rgba(201,168,76,.018) 1px,transparent 0,transparent 50%),
+             repeating-linear-gradient(-45deg,rgba(201,168,76,.018) 0,rgba(201,168,76,.018) 1px,transparent 0,transparent 50%);
+  background-size:12px 12px}
+.cb-corner{position:absolute;width:16px;height:16px;border-color:rgba(201,168,76,.42);border-style:solid}
+.cb-corner.tl{top:12px;left:12px;border-width:1px 0 0 1px;border-radius:3px 0 0 0}
+.cb-corner.tr{top:12px;right:12px;border-width:1px 1px 0 0;border-radius:0 3px 0 0}
+.cb-corner.bl{bottom:12px;left:12px;border-width:0 0 1px 1px;border-radius:0 0 0 3px}
+.cb-corner.br{bottom:12px;right:12px;border-width:0 1px 1px 0;border-radius:0 0 3px 0}
+.cb-sigil{position:relative;z-index:2;width:68px;height:68px}
+.cb-roman{position:relative;z-index:2;font-family:'Cinzel Decorative',serif;font-size:11px;color:var(--gold-dim);letter-spacing:.22em}
+.cb-whisper{position:relative;z-index:2;font-family:'IM Fell English',serif;font-style:italic;font-size:9px;color:rgba(201,168,76,.26);text-align:center;padding:0 14px;line-height:1.4}
+@keyframes breathe{
+  0%,100%{box-shadow:0 4px 24px rgba(0,0,0,.6)}
+  50%{box-shadow:0 4px 32px rgba(201,168,76,.09),0 0 0 1px rgba(201,168,76,.06)}
+}
+.card-slot:not(.flipped) .card-back{animation:breathe 4s ease-in-out infinite;animation-delay:var(--delay,0s)}
+.card-front{transform:rotateY(180deg);display:flex;flex-direction:column;border:1px solid rgba(201,168,76,.38)}
+.cf-top{padding:7px 10px 5px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--div);flex-shrink:0}
+.cf-roman{font-family:'Cinzel Decorative',serif;font-size:10px;color:var(--gold);letter-spacing:.15em}
+.cf-arcana-name{font-family:'Cinzel Decorative',serif;font-size:7px;color:var(--gold-dim);letter-spacing:.12em;text-align:right;line-height:1.3;max-width:90px}
+.cf-art{flex:1;display:flex;align-items:center;justify-content:center;padding:0;position:relative;overflow:hidden;min-height:0}
+.cf-art::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,var(--art-glow,rgba(168,151,216,.22)) 0%,transparent 70%);pointer-events:none;z-index:1}
+.cf-art img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;filter:sepia(18%) contrast(1.05) brightness(.92) saturate(.9);transition:filter .5s ease}
+.card-slot:hover .cf-art img{filter:sepia(0%) contrast(1.08) brightness(1) saturate(1.05)}
+.cf-art svg{width:100%;height:100%;max-width:148px;max-height:162px;display:block}
+.cf-art.has-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(6,2,15,.35) 0%,transparent 30%,transparent 65%,rgba(6,2,15,.55) 100%);z-index:2;pointer-events:none}
+.cf-bottom{padding:6px 10px 8px;border-top:1px solid var(--div);flex-shrink:0}
+.cf-mystical{font-family:'Cinzel Decorative',serif;font-size:7.5px;color:var(--gold-lt);letter-spacing:.1em;margin-bottom:2px;line-height:1.35}
+.cf-real{font-family:'IM Fell English',serif;font-style:italic;font-size:9px;color:var(--parch-dim);line-height:1.3}
+.detail-panel{background:var(--surface);border:1px solid var(--div);border-radius:16px;max-width:740px;margin:0 auto 2rem;overflow:hidden;opacity:0;transform:translateY(14px);transition:opacity .45s,transform .45s;pointer-events:none}
+.detail-panel.visible{opacity:1;transform:translateY(0);pointer-events:auto}
+.d-stripe{height:4px;width:100%}
+.d-body{padding:1.75rem 2rem 1.5rem}
+.d-meta{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:.75rem}
+.d-left{flex:1;min-width:200px}
+.d-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.d-roman{font-family:'Cinzel Decorative',serif;font-size:10px;color:var(--gold-dim);letter-spacing:.25em}
+.d-stage{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 9px;border-radius:20px;font-weight:600;border:1px solid}
+.d-arcana-title{font-family:'Cinzel Decorative',serif;font-size:13px;color:rgba(201,168,76,.55);letter-spacing:.08em;margin-bottom:1px}
+.d-name{font-family:'Cinzel Decorative',serif;font-size:clamp(15px,2.5vw,21px);color:var(--gold);margin-bottom:3px;line-height:1.2}
+.d-real{font-family:'IM Fell English',serif;font-style:italic;font-size:14px;color:var(--mist)}
+.btn-example{display:inline-flex;align-items:center;gap:7px;font-family:'Raleway',sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;padding:9px 18px;border-radius:8px;cursor:pointer;background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(201,168,76,.04));border:1px solid rgba(201,168,76,.42);color:var(--gold);transition:background .2s,border-color .2s;white-space:nowrap;flex-shrink:0;align-self:flex-start}
+.btn-example:hover{background:rgba(201,168,76,.18);border-color:var(--gold)}
+.btn-example:active{transform:scale(.97)}
+.tarot-block{background:rgba(201,168,76,.055);border:1px solid rgba(201,168,76,.18);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;gap:14px;align-items:flex-start}
+.tarot-sigil-sm{flex-shrink:0;width:48px;height:48px;opacity:.85}
+.tarot-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:3px}
+.tarot-card-name{font-family:'Cinzel Decorative',serif;font-size:12px;color:var(--gold-lt);margin-bottom:4px}
+.tarot-meaning{font-family:'IM Fell English',serif;font-style:italic;font-size:12px;color:var(--parch-dim);line-height:1.6}
+.d-hr{width:48px;height:1px;background:var(--div);margin:1rem 0}
+.d-oracle{font-family:'IM Fell English',serif;font-style:italic;font-size:13.5px;color:var(--gold-lt);border-left:2px solid var(--gold-dim);padding-left:14px;line-height:1.7;margin-bottom:.9rem}
+.d-def{font-family:'Raleway',sans-serif;font-size:14px;color:var(--parch);line-height:1.78;margin-bottom:.9rem}
+.d-pm{font-family:'Raleway',sans-serif;font-size:13px;color:var(--parch-dim);line-height:1.72}
+.d-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1.1rem}
+.d-tag{font-size:10px;letter-spacing:.08em;padding:3px 11px;border-radius:20px;border:1px solid var(--div);color:var(--parch-dim)}
+.modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(6,2,15,.92);display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-box{background:var(--surface2);border:1px solid rgba(201,168,76,.36);border-radius:18px;max-width:620px;width:100%;max-height:90vh;overflow-y:auto;transform:scale(.95) translateY(12px);transition:transform .3s;position:relative}
+.modal-overlay.open .modal-box{transform:scale(1) translateY(0)}
+.m-stripe{height:4px;border-radius:18px 18px 0 0;width:100%}
+.m-body{padding:1.75rem 2rem 2rem}
+.modal-close{position:absolute;top:14px;right:16px;background:transparent;border:1px solid var(--div);border-radius:50%;width:30px;height:30px;cursor:pointer;color:var(--parch-dim);font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{color:var(--gold);border-color:var(--gold)}
+.m-eyebrow{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:4px}
+.m-title{font-family:'Cinzel Decorative',serif;font-size:clamp(14px,2.5vw,19px);color:var(--gold);margin-bottom:3px;line-height:1.2}
+.m-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:13px;color:var(--mist);margin-bottom:1.25rem}
+.scenario-block{background:rgba(255,255,255,.025);border:1px solid var(--div);border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:1rem}
+.scenario-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px}
+.scenario-text{font-size:13px;line-height:1.72;color:var(--parch)}
+.scenario-text strong{color:var(--gold-lt);font-weight:600}
+.outcome-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.outcome-card{border-radius:10px;padding:.9rem 1rem;border:1px solid}
+.outcome-card.good{background:rgba(58,172,172,.07);border-color:rgba(58,172,172,.22)}
+.outcome-card.bad{background:rgba(192,85,128,.07);border-color:rgba(192,85,128,.22)}
+.outcome-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px;font-weight:600}
+.outcome-card.good .outcome-label{color:var(--teal)}
+.outcome-card.bad .outcome-label{color:var(--rose)}
+.outcome-text{font-size:12px;line-height:1.65;color:var(--parch-dim)}
+.pm-tip{background:linear-gradient(135deg,rgba(201,168,76,.07),rgba(201,168,76,.02));border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:1rem 1.25rem}
+.pm-tip-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:5px}
+.pm-tip-text{font-family:'IM Fell English',serif;font-style:italic;font-size:13px;color:var(--parch);line-height:1.7}
+.complete-msg{text-align:center;padding:2rem 1rem;opacity:0;transition:opacity .8s}
+.complete-msg.show{opacity:1}
+.complete-title{font-family:'Cinzel Decorative',serif;font-size:18px;color:var(--gold);margin-bottom:.5rem}
+.complete-sub{font-family:'IM Fell English',serif;font-style:italic;color:var(--parch-dim);font-size:14px;margin-bottom:1.25rem}
+.btn-again{font-family:'Raleway',sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;padding:10px 26px;border:1px solid rgba(201,168,76,.38);border-radius:8px;background:transparent;color:var(--gold);cursor:pointer}
+.btn-again:hover{background:var(--gold-faint)}
+@media(max-width:640px){
+  :root{--cw:108px;--ch:178px}
+  .cards-grid{gap:10px 8px}
+  .cf-mystical{font-size:6.5px}
+  .cf-real{font-size:8px}
+  .d-body{padding:1.25rem}
+  .m-body{padding:1.25rem}
+  .outcome-row{grid-template-columns:1fr}
+  .d-meta{flex-direction:column}
+}
+@media(max-width:420px){
+  :root{--cw:92px;--ch:152px}
+  .cards-grid{gap:8px 6px}
+}
+</style>
 </head>
-<body class="page page--spread">
-  <div class="bg"></div>
-  <div class="particles" aria-hidden="true"></div>
-  <div class="petalLayer" id="petalLayer" aria-hidden="true"></div>
-
-  <div class="candleField candleField--spread" aria-hidden="true">
-    <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
-    <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
-    <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
-    <div class="candle"><div class="flame"></div></div><div class="candle"><div class="flame"></div></div>
+<body>
+<canvas id="starCanvas" aria-hidden="true"></canvas>
+<div class="page">
+  <a class="back-link" href="index.html">Return to the Oracle</a>
+  <div class="header">
+    <p class="ornament">&#10022; &#10022; &#10022;</p>
+    <h1>The Nine-Card Spread</h1>
+    <p class="subtitle">Nine cards. Three stages of the craft. Each drawn from the Major Arcana.</p>
+    <div class="stage-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#a897d8"></div>Linguistic Arts</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3aacac"></div>Technical Process</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c05580"></div>Management &amp; Delivery</div>
+    </div>
+    <div class="progress-row" id="progressRow"></div>
   </div>
-
-  <main class="spreadStage">
-    <section class="spreadWindow" aria-label="The tarot spread">
-      <header class="spreadWindow__header">
-        <p class="kicker">The Spread is Cast</p>
-        <h1 class="title spreadWindow__title">The Spread is Cast</h1>
-        <p class="deckline">Choose a card… or let the cards choose you.</p>
-        <p class="lore" id="spreadRitualText">The cards must first be awakened.</p>
-      </header>
-
-      <section class="tarotTable" aria-label="Nine Arcana cards">
-        <div class="cardsGrid cardsGrid--spread" id="cardsGrid" data-state="stacked">
-          <button class="tarot tarot--back" data-card="1" data-whisper="Every journey begins the moment someone dares to ask the right question." aria-label="Arcana I The Summons"><span class="tarot__sigil">I</span><span class="tarot__label">The Summons</span></button>
-          <button class="tarot tarot--back" data-card="2" data-whisper="Direction is the difference between movement and progress." aria-label="Arcana II The Compass"><span class="tarot__sigil">II</span><span class="tarot__label">The Compass</span></button>
-          <button class="tarot tarot--back" data-card="3" data-whisper="Languages do not merely translate words — they reshape meaning." aria-label="Arcana III The Tower of Babel"><span class="tarot__sigil">III</span><span class="tarot__label">The Tower of Babel</span></button>
-          <button class="tarot tarot--back" data-card="4" data-whisper="No global project moves forward by one pair of hands alone." aria-label="Arcana IV The Chain of Hands"><span class="tarot__sigil">IV</span><span class="tarot__label">The Chain of Hands</span></button>
-          <button class="tarot tarot--back" data-card="5" data-whisper="Time is the silent force guiding every project toward its fate." aria-label="Arcana V The Clockwork Wheel"><span class="tarot__sigil">V</span><span class="tarot__label">The Clockwork Wheel</span></button>
-          <button class="tarot tarot--back" data-card="6" data-whisper="A translation is true only when meaning survives the journey." aria-label="Arcana VI The Mirror of Meaning"><span class="tarot__sigil">VI</span><span class="tarot__label">The Mirror of Meaning</span></button>
-          <button class="tarot tarot--back" data-card="7" data-whisper="Invisible systems hold the entire world of localization together." aria-label="Arcana VII The Hidden Thread"><span class="tarot__sigil">VII</span><span class="tarot__label">The Hidden Thread</span></button>
-          <button class="tarot tarot--back" data-card="8" data-whisper="Every project demands a choice between speed, cost, and perfection." aria-label="Arcana VIII The Balancing Scales"><span class="tarot__sigil">VIII</span><span class="tarot__label">The Balancing Scales</span></button>
-          <button class="tarot tarot--back" data-card="9" data-whisper="When languages align, a message finally belongs everywhere." aria-label="Arcana IX The World Unveiled"><span class="tarot__sigil">IX</span><span class="tarot__label">The World Unveiled</span></button>
+  <div class="cards-grid" id="cardsGrid"></div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="d-stripe" id="dStripe"></div>
+    <div class="d-body">
+      <div class="d-meta">
+        <div class="d-left">
+          <div class="d-eyebrow">
+            <span class="d-roman" id="dRoman"></span>
+            <span class="d-stage" id="dStage"></span>
+          </div>
+          <div class="d-arcana-title" id="dArcanaTitle"></div>
+          <div class="d-name" id="dName"></div>
+          <div class="d-real" id="dReal"></div>
         </div>
-      </section>
-
-      <p class="deckline spreadLine">Localization is rarely visible to users. Yet it shapes every global experience.</p>
-      <p class="hint" id="spreadWhisper" aria-live="polite"></p>
-
-      <div class="spreadActions">
-        <a class="btn btn--gold" id="startReading" href="reading.html?card=1">Start the Reading</a>
-        <a class="btn btn--ghost" href="index.html">Return to Cover</a>
+        <button class="btn-example" onclick="openModal()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="7" cy="7" r="6"/><circle cx="7" cy="4.5" r=".7" fill="currentColor" stroke="none"/><line x1="7" y1="6.5" x2="7" y2="10.5"/></svg>
+          Real-Life Example
+        </button>
       </div>
-    </section>
-  </main>
+      <div class="tarot-block">
+        <svg class="tarot-sigil-sm" id="tarotSigil" viewBox="0 0 64 64" fill="none"></svg>
+        <div>
+          <div class="tarot-label">Tarot Correspondence</div>
+          <div class="tarot-card-name" id="tarotCardName"></div>
+          <div class="tarot-meaning" id="tarotMeaning"></div>
+        </div>
+      </div>
+      <div class="d-hr"></div>
+      <p class="d-oracle" id="dOracle"></p>
+      <p class="d-def" id="dDef"></p>
+      <p class="d-pm" id="dPm"></p>
+      <div class="d-tags" id="dTags"></div>
+    </div>
+  </div>
+  <div class="complete-msg" id="completeMsg">
+    <div class="complete-title">The Reading is Complete</div>
+    <p class="complete-sub">The nine mysteries of the craft have been laid bare before you. Go forth and build.</p>
+    <button class="btn-again" onclick="resetSpread()">Draw Again</button>
+  </div>
+</div>
+<div class="modal-overlay" id="modalOverlay" onclick="closeOutside(event)">
+  <div class="modal-box">
+    <div class="m-stripe" id="mStripe"></div>
+    <div class="m-body">
+      <button class="modal-close" onclick="closeModal()">&#215;</button>
+      <div class="m-eyebrow" id="mEyebrow"></div>
+      <div class="m-title" id="mTitle"></div>
+      <div class="m-sub" id="mSub"></div>
+      <div class="scenario-block">
+        <div class="scenario-label">The Scenario</div>
+        <div class="scenario-text" id="mScenario"></div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-card good">
+          <div class="outcome-label">When the card is heeded</div>
+          <div class="outcome-text" id="mGood"></div>
+        </div>
+        <div class="outcome-card bad">
+          <div class="outcome-label">When the card is ignored</div>
+          <div class="outcome-text" id="mBad"></div>
+        </div>
+      </div>
+      <div class="pm-tip">
+        <div class="pm-tip-label">The Oracle's Counsel</div>
+        <div class="pm-tip-text" id="mTip"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+/* ── Star Canvas ── */
+(function(){
+  const canvas = document.getElementById('starCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
+  function init(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    stars = Array.from({length:200},()=>({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: 0.15+Math.random()*1.5,
+      op: 0.07+Math.random()*0.6,
+      spd: 0.02+Math.random()*0.13,
+      tw: Math.random()*Math.PI*2,
+      gold: Math.random()<0.07
+    }));
+  }
+  function draw(ts){
+    ctx.clearRect(0,0,W,H);
+    stars.forEach(s=>{
+      s.tw += 0.02;
+      s.y -= s.spd;
+      if(s.y < -2){ s.y = H+2; s.x = Math.random()*W; }
+      const op = s.op*(0.6+0.4*Math.sin(s.tw));
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle = s.gold
+        ? `rgba(201,168,76,${(op*0.7).toFixed(3)})`
+        : `rgba(232,220,198,${op.toFixed(3)})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',init);
+  init();
+  requestAnimationFrame(draw);
+})();
 
-  <script src="script.js"></script>
+/* ── Stage Config ── */
+const ST = {
+  ling:{ label:'Linguistic',  color:'#a897d8', glow:'rgba(168,151,216,.22)', stripe:'linear-gradient(90deg,#3a2878,#a897d8)' },
+  tech:{ label:'Technical',   color:'#3aacac',  glow:'rgba(58,172,172,.22)',  stripe:'linear-gradient(90deg,#1a6060,#3aacac)' },
+  mgmt:{ label:'Management',  color:'#c05580',  glow:'rgba(192,85,128,.22)',  stripe:'linear-gradient(90deg,#7a2050,#c05580)' }
+};
+
+/* ── Sigils ── */
+const SIGILS = [
+  /* 0: 9-pointed star + inner circle */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><path d="M32,4 L35.76,21.66 L50,10.55 L41.53,26.5 L59.58,27.14 L42.83,33.91 L56.25,46 L39.07,40.43 L41.58,58.32 L32,43 L22.42,58.32 L24.93,40.43 L7.75,46 L21.17,33.91 L4.42,27.14 L22.47,26.5 L14,10.55 L28.24,21.66 Z" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="9" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/></svg>`,
+  /* 1: circle + 8 radial lines + center dot */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><circle cx="32" cy="32" r="26" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><line x1="32" y1="6" x2="32" y2="58" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><line x1="6" y1="32" x2="58" y2="32" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><line x1="13.6" y1="13.6" x2="50.4" y2="50.4" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><line x1="50.4" y1="13.6" x2="13.6" y2="50.4" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="2.5" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/></svg>`,
+  /* 2: Star of David (two triangles) + center dot */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><polygon points="32,6 57,50 7,50" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><polygon points="32,58 7,14 57,14" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="2" fill="#c9a84c" opacity="0.5"/></svg>`,
+  /* 3: double diamond + center dot */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><polygon points="32,4 60,32 32,60 4,32" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><polygon points="32,16 48,32 32,48 16,32" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="2" fill="#c9a84c" opacity="0.5"/></svg>`,
+  /* 4: 3 concentric circles (outer dashed) + tiny dot */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><circle cx="32" cy="32" r="28" stroke="#c9a84c" stroke-width="0.9" stroke-dasharray="3 3" opacity="0.5"/><circle cx="32" cy="32" r="18" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="8" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="1.5" fill="#c9a84c" opacity="0.5"/></svg>`,
+  /* 5: two overlapping triangles + center circle */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><polygon points="32,6 56,50 8,50" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><polygon points="32,58 8,14 56,14" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="5" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/></svg>`,
+  /* 6: nested diamonds + filled center */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><polygon points="32,4 60,32 32,60 4,32" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><polygon points="32,18 46,32 32,46 18,32" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="3" fill="#c9a84c" opacity="0.5"/></svg>`,
+  /* 7: circle + crescent arc + top/bottom dots */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><circle cx="32" cy="32" r="26" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><path d="M32,6 A26,26 0 0 1 32,58" stroke="#c9a84c" stroke-width="2.2" opacity="0.55"/><circle cx="32" cy="6" r="2.2" fill="#c9a84c" opacity="0.55"/><circle cx="32" cy="58" r="2.2" fill="#c9a84c" opacity="0.55"/></svg>`,
+  /* 8: two crossing ellipses + center dot */
+  `<svg class="cb-sigil" viewBox="0 0 64 64" fill="none" width="68" height="68"><ellipse cx="32" cy="32" rx="26" ry="12" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><ellipse cx="32" cy="32" rx="12" ry="26" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><circle cx="32" cy="32" r="2" fill="#c9a84c" opacity="0.5"/></svg>`
+];
+
+/* ── Card Data ── */
+const CARDS = [
+  {
+    roman:'I', stage:'ling', imgFile:'magician.jpg', bgColor:'#0e0826',
+    arcanaTitle:'The Magician',
+    mystical:'The Memory Keeper',
+    real:'Translation Memory & TM Leverage',
+    tarotCard:'The Magician \u2014 Major Arcana I',
+    tarotMeaning:'He stands at his table of tools \u2014 wand, cup, sword, pentacle \u2014 one hand raised to the heavens, one pointing to the earth. As above, so below. He transforms raw material into mastery, channelling infinite potential through disciplined will.',
+    oracle:'Like the Magician who wastes nothing and wields every instrument at hand, the wise PM mines every word already translated. The past speaks to the present; the memory serves the future.',
+    def:'Translation Memory is a living database of every approved segment \u2014 sentences, headers, UI strings \u2014 ever translated in your programme. When new content arrives, the CAT tool scans the TM and scores similarity: 100% matches cost nothing, 75\u201399% fuzzy matches are discounted, new words pay full rate.',
+    pm:'A PM who commands TM leverage can reduce costs by 30\u201360% on versioned content and quote budgets with precision before a single translator opens a file.',
+    tags:['CAT Tools','memoQ','Phrase TMS','SDL Trados','Cost Modelling','TM Maintenance'],
+    example:{
+      scenario:'<strong>Spotify</strong> releases monthly playlist-page copy updates. 70% of strings are unchanged, 20% are fuzzy matches, only 10% are new. The PM runs a TM analysis report before sending to the LSP.',
+      good:'The PM negotiates band discounts \u2014 0% for exact, 30% for fuzzies \u2014 saving \u20ac4,200 on a \u20ac6,000 project. The memory has spoken.',
+      bad:'No analysis. Full word count sent at full rate. \u20ac6,000 paid for strings the company already owns. The Magician\'s table sits unused.',
+      tip:'"Always run a TM analysis before raising a PO. If your LSP quotes without seeing it, ask why \u2014 and make the analysis report a contractual deliverable."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><line x1="74" y1="88" x2="74" y2="32" stroke="#c9a84c" stroke-width="1.5" opacity="0.7"/><line x1="24" y1="88" x2="124" y2="88" stroke="#c9a84c" stroke-width="1" opacity="0.55"/><ellipse cx="60" cy="22" rx="9" ry="6" stroke="#c9a84c" stroke-width="0.9" opacity="0.6"/><ellipse cx="88" cy="22" rx="9" ry="6" stroke="#c9a84c" stroke-width="0.9" opacity="0.6"/><circle cx="74" cy="58" r="12" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><circle cx="40" cy="80" r="5" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/><rect x="58" y="76" width="10" height="10" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/><polygon points="86,88 80,76 92,76" stroke="#c9a84c" stroke-width="0.8" fill="none" opacity="0.5"/><circle cx="107" cy="80" r="5" stroke="#a897d8" stroke-width="0.8" opacity="0.5"/><line x1="24" y1="88" x2="24" y2="108" stroke="#c9a84c" stroke-width="0.6" opacity="0.3"/><line x1="124" y1="88" x2="124" y2="108" stroke="#c9a84c" stroke-width="0.6" opacity="0.3"/></svg>`
+  },
+  {
+    roman:'II', stage:'ling', imgFile:'high-priestess.jpg', bgColor:'#08041e',
+    arcanaTitle:'The High Priestess',
+    mystical:'The Quality Sentinel',
+    real:'Linguistic Quality Assurance (LQA)',
+    tarotCard:'The High Priestess \u2014 Major Arcana II',
+    tarotMeaning:'She sits between two pillars \u2014 one dark, one light \u2014 guarding the veil between the known and the unknown. The scroll of Torah rests in her lap, half-concealed. She does not give her secrets freely. Wisdom is earned through rigour, not assumption.',
+    oracle:'Between two pillars \u2014 pass and fail \u2014 the Sentinel stands watch. She reads what others miss. She sees the error hiding in the fold of the veil, the terminology broken in the third paragraph, the tone that has drifted from the brand. She does not rush. She sees.',
+    def:'LQA evaluates translated output against defined error categories \u2014 accuracy, fluency, terminology, style, locale conventions \u2014 using frameworks like MQM or LISA QA. Errors are classified by severity (critical, major, minor) and scored against a threshold agreed before the project begins.',
+    pm:'PMs define LQA scope before briefing the LSP, not after delivery. Who reviews, how many words sampled, what threshold triggers rework \u2014 these decisions determine whether LQA is a genuine quality gate or a decorative ceremony.',
+    tags:['MQM Framework','LISA QA','In-market Review','LSP SLAs','Error Typology','Rework Protocols'],
+    example:{
+      scenario:'<strong>A global fintech app</strong> launches into 12 languages. The PM sets up MQM-based LQA with in-country reviewers, 2,000-word samples per language, and a threshold of \u22641.5 critical errors per 1,000 words.',
+      good:'German reviewer catches a terminology error that would have rendered a legal disclaimer incorrectly. Fixed pre-launch. Zero legal exposure.',
+      bad:'No LQA scope defined. LSP self-certifies quality. Brazilian Portuguese ships with \u201cconta\u201d translated three different ways. Support tickets spike 40%.',
+      tip:'"The High Priestess never skips her reading. Write your LQA brief before you brief the LSP \u2014 reviewer profile, sample size, error taxonomy, pass/fail threshold \u2014 all contractual, never improvised."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><rect x="14" y="28" width="20" height="120" stroke="#a897d8" stroke-width="1" opacity="0.6"/><rect x="114" y="28" width="20" height="120" stroke="#c9a84c" stroke-width="1" opacity="0.6"/><path d="M34,28 Q74,8 114,28" stroke="#c9a84c" stroke-width="0.9" opacity="0.5"/><path d="M74,14 A16,18 0 1 1 74,50 A11,13 0 1 0 74,14 Z" fill="rgba(201,168,76,0.12)" stroke="#c9a84c" stroke-width="0.9" opacity="0.55"/><rect x="56" y="78" width="36" height="44" rx="2" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><line x1="62" y1="88" x2="88" y2="88" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/><line x1="62" y1="94" x2="88" y2="94" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/><line x1="62" y1="100" x2="84" y2="100" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/><line x1="34" y1="136" x2="114" y2="136" stroke="#c9a84c" stroke-width="0.5" stroke-dasharray="4 3" opacity="0.3"/></svg>`
+  },
+  {
+    roman:'III', stage:'ling', imgFile:'fool.jpg', bgColor:'#060318',
+    arcanaTitle:'The Fool',
+    mystical:'The Shadow Test',
+    real:'Pseudotranslation',
+    tarotCard:'The Fool \u2014 Major Arcana 0 / XXII',
+    tarotMeaning:'The Fool stands at the cliff\'s edge, one foot already in the air, a white rose in hand, blissfully unafraid of the drop below. He is not ignorant \u2014 he is unlimited. He steps into the unknown to discover what the cautious never will. Test first. Fall safely.',
+    oracle:'Before the journey truly begins, the Fool walks the path in disguise \u2014 wearing false letters, dressed as translation without being translation. The shadow knows what the light has not yet found: the broken doorway, the string chained to its frame, the button that weeps when stretched.',
+    def:'Pseudotranslation substitutes real characters with accented Unicode equivalents (e.g. \u201cSubmit\u201d \u2192 \u201c\u0160\u00fc\u0180\u043c\u00ef\u0167\u201d) to simulate a translated UI without any human translator. It reveals text expansion, clipped buttons, unsupported fonts, hardcoded strings, and RTL layout breaks \u2014 all before a single file is briefed.',
+    pm:'Run pseudotranslation as the very first step of any new product localization. The cost is near-zero; the bugs it catches are the most expensive to fix late in the cycle.',
+    tags:['UI/UX Testing','Text Expansion','RTL Layout','i18n Engineering','String Externalization','Pre-Translation QA'],
+    example:{
+      scenario:'<strong>A SaaS company</strong> prepares to localize its dashboard into German and Japanese. Before briefing any translators, the PM asks engineering to run pseudotranslation across the full UI.',
+      good:'14 hardcoded strings discovered. 3 buttons truncate under German +30% expansion. All fixed in the current sprint, before a single word of German is written.',
+      bad:'No pseudotranslation. German translation delivered. Button clipping discovered in UAT. Re-deploy required. 3-day delay. \u20ac800 in rework. The Fool\'s fall was not graceful.',
+      tip:'"The Fool leaps so others may walk. Run pseudo before you brief. Finding a hardcoded string after translation costs 10\u00d7 more than finding it before."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><circle cx="110" cy="28" r="18" stroke="#c9a84c" stroke-width="0.9" opacity="0.55"/><line x1="110" y1="10" x2="110" y2="28" stroke="#c9a84c" stroke-width="1" opacity="0.4"/><line x1="92" y1="28" x2="110" y2="28" stroke="#c9a84c" stroke-width="1" opacity="0.4"/><path d="M0,140 Q40,80 80,100 L148,90" stroke="#c9a84c" stroke-width="1.2" opacity="0.5"/><circle cx="72" cy="72" r="9" stroke="#a897d8" stroke-width="0.9" opacity="0.5"/><line x1="72" y1="81" x2="72" y2="102" stroke="#a897d8" stroke-width="1" opacity="0.4"/><line x1="72" y1="88" x2="58" y2="98" stroke="#a897d8" stroke-width="0.9" opacity="0.4"/><line x1="72" y1="88" x2="86" y2="98" stroke="#a897d8" stroke-width="0.9" opacity="0.4"/><line x1="72" y1="102" x2="64" y2="116" stroke="#a897d8" stroke-width="0.9" opacity="0.4"/><line x1="72" y1="102" x2="80" y2="116" stroke="#a897d8" stroke-width="0.9" opacity="0.4"/><circle cx="86" cy="78" r="4" stroke="#c9a84c" stroke-width="0.7" opacity="0.4"/></svg>`
+  },
+  {
+    roman:'IV', stage:'tech', imgFile:'chariot.jpg', bgColor:'#060220',
+    arcanaTitle:'The Chariot',
+    mystical:'The Iron Scribe',
+    real:'Machine Translation Post-Editing (MTPE)',
+    tarotCard:'The Chariot \u2014 Major Arcana VII',
+    tarotMeaning:'Two sphinxes \u2014 one black, one white \u2014 pull the chariot in opposite directions. The charioteer does not hold reins but commands through will alone. Opposing forces harnessed correctly become forward motion. Raw machine power directed by human mastery.',
+    oracle:'The Iron Scribe does not translate \u2014 it transcribes at impossible speed, channelling the raw electric voice of the machine through the refining hands of human craft. The black sphinx is velocity. The white sphinx is accuracy. Both must be commanded.',
+    def:'MTPE uses neural MT engines (DeepL, ModernMT, Google NMT) to generate raw translations that human post-editors then refine. Light MTPE corrects only critical errors; Full MTPE brings output to publishable quality. The tier must match the content\'s risk level.',
+    pm:'MTPE is a cost and speed lever, not a universal solution. Content tiering \u2014 deciding what gets MT, what gets HT, what gets transcreation \u2014 is a strategic PM decision that must precede any briefing.',
+    tags:['DeepL','ModernMT','Google NMT','MTPE-L / MTPE-F','Content Tiering','Cost Modelling'],
+    example:{
+      scenario:'<strong>An e-commerce company</strong> localizes 80,000 product descriptions per quarter into 8 languages. The PM tiers: MTPE-F for the top 100 hero products, MTPE-L for long-tail SKUs, raw MT for internal metadata.',
+      good:'Hero products read beautifully. Long-tail content ships in 3 days vs. 3 weeks. 62% reduction in localization spend. Both sphinxes obey.',
+      bad:'No tiering. MTPE-L applied to hero product pages. French copy reads mechanically. Customer complaints arrive from Paris. The chariot has veered.',
+      tip:'"Before briefing any MTPE project, build a content tier matrix: content type, risk level, MT tier. Have stakeholders sign it. The charioteer must choose which sphinx to trust before moving."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><rect x="34" y="58" width="80" height="50" stroke="#c9a84c" stroke-width="1" opacity="0.5"/><circle cx="46" cy="118" r="16" stroke="#c9a84c" stroke-width="0.9" opacity="0.55"/><circle cx="102" cy="118" r="16" stroke="#c9a84c" stroke-width="0.9" opacity="0.55"/><circle cx="46" cy="118" r="8" stroke="#c9a84c" stroke-width="0.6" opacity="0.4"/><circle cx="102" cy="118" r="8" stroke="#c9a84c" stroke-width="0.6" opacity="0.4"/><polygon points="20,108 34,88 34,108" fill="rgba(168,151,216,0.1)" stroke="#a897d8" stroke-width="0.9" opacity="0.55"/><polygon points="128,108 114,88 114,108" fill="rgba(201,168,76,0.1)" stroke="#c9a84c" stroke-width="0.9" opacity="0.55"/><line x1="74" y1="28" x2="74" y2="58" stroke="#c9a84c" stroke-width="0.9" opacity="0.4"/><circle cx="74" cy="22" r="7" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/></svg>`
+  },
+  {
+    roman:'V', stage:'tech', imgFile:'hermit.jpg', bgColor:'#070318',
+    arcanaTitle:'The Hermit',
+    mystical:'The Fog of Similarity',
+    real:'Fuzzy Match Thresholds & Word Count Analysis',
+    tarotCard:'The Hermit \u2014 Major Arcana IX',
+    tarotMeaning:'The old man stands alone on a mountain peak, lantern raised in the darkness. He does not wait for daylight \u2014 he brings his own light and reads what others walk past unseen. His staff is patience. His lantern is rigour. He sees every gradation in the fog.',
+    oracle:'In the fog of similarity, only the Hermit\'s lantern reveals the truth: this segment is not new \u2014 it is 87% the same as what came before. Here the fog is 94%. Here it is perfect, and the word costs nothing. The Hermit does not guess. He measures.',
+    def:'Fuzzy matches are TM segments that partially overlap with new source text, scored as percentages (75\u201384%, 85\u201394%, 95\u201399%). Unlike 100% matches which are free, fuzzies are billed at discounted rates by band. Pre-project word count analysis determines the cost forecast and negotiation position.',
+    pm:'Reading a CAT analysis report fluently \u2014 understanding leverage %, new word counts, and fuzzy band distribution \u2014 is foundational PM commercial literacy. It separates PMs who quote confidently from those who accept the LSP\'s word.',
+    tags:['Word Count Analysis','TM Bands','CAT Tool Reports','Quoting','Vendor Negotiation','Leverage %'],
+    example:{
+      scenario:'<strong>A legal tech firm</strong> updates its EULA across 18 languages quarterly. The PM runs a TM analysis each cycle. This quarter: 40% exact matches, 35% high fuzzies, 25% new words.',
+      good:'PM negotiates: 0% for exact, 25% for fuzzies, 100% for new. Invoice: \u20ac2,100 vs \u20ac5,400 at full rate. The lantern found \u20ac3,300 in the fog.',
+      bad:'PM accepts the LSP quote without running analysis. Full rate on all segments. \u20ac3,300 overcharged. The fog went unread.',
+      tip:'"Export the TM analysis CSV before you raise every purchase order. Every single time. If your CAT tool cannot generate it, that is a tooling problem worth solving today."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><polygon points="74,18 128,138 20,138" stroke="#c9a84c" stroke-width="1" opacity="0.5"/><circle cx="74" cy="55" r="8" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><rect x="100" y="72" width="18" height="24" rx="2" stroke="#c9a84c" stroke-width="0.9" opacity="0.55"/><line x1="109" y1="60" x2="109" y2="72" stroke="#c9a84c" stroke-width="1" opacity="0.5"/><line x1="100" y1="84" x2="92" y2="78" stroke="#c9a84c" stroke-width="0.7" stroke-dasharray="2 2" opacity="0.4"/><line x1="100" y1="84" x2="88" y2="84" stroke="#c9a84c" stroke-width="0.7" stroke-dasharray="2 2" opacity="0.4"/><line x1="100" y1="84" x2="92" y2="90" stroke="#c9a84c" stroke-width="0.7" stroke-dasharray="2 2" opacity="0.4"/><line x1="118" y1="84" x2="126" y2="78" stroke="#c9a84c" stroke-width="0.7" stroke-dasharray="2 2" opacity="0.4"/><line x1="118" y1="84" x2="130" y2="84" stroke="#c9a84c" stroke-width="0.7" stroke-dasharray="2 2" opacity="0.4"/><line x1="118" y1="84" x2="126" y2="90" stroke="#c9a84c" stroke-width="0.7" stroke-dasharray="2 2" opacity="0.4"/><line x1="60" y1="118" x2="88" y2="118" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/></svg>`
+  },
+  {
+    roman:'VI', stage:'tech', imgFile:'empress.jpg', bgColor:'#050215',
+    arcanaTitle:'The Empress',
+    mystical:'The Keeper of Terms',
+    real:'Linguistic Asset Management',
+    tarotCard:'The Empress \u2014 Major Arcana III',
+    tarotMeaning:'The Empress sits in a garden of abundant wheat, robed in stars, a crown of twelve stars upon her head. All living things grow from her care. She is abundance through tending \u2014 what is nurtured flourishes, what is neglected withers and dies.',
+    oracle:'The garden of the Keeper is rich with terms precisely named and consistently spelled \u2014 each planted in its proper row, each tended with the same hand, in every language. She knows that a garden untended becomes a wilderness of contradiction, and contradiction is the death of trust.',
+    def:'Linguistic assets are the shared foundation of every localization project: termbases (approved translations for key terms), style guides (tone, register, formatting rules), translation memories, and brand voice documentation. Managed centrally, they ensure consistency regardless of which linguist, LSP, or tool is involved.',
+    pm:'Linguistic asset neglect is the root cause of most consistency issues \u2014 and the first thing experienced PMs fix when inheriting a broken programme. A well-maintained termbase reduces review cycles, speeds linguist onboarding, and outlasts any vendor transition.',
+    tags:['Termbase / Glossary','Style Guide','TM Governance','Crowdin','Phrase TMS','Brand Voice'],
+    example:{
+      scenario:'<strong>A cloud software company</strong> has grown from 3 to 14 languages over 4 years with 3 different LSPs. No central termbase. The word \u201cDashboard\u201d is translated four different ways across the product.',
+      good:'New PM audits all TMs, extracts key terms, creates a 200-term glossary per language, uploads to all active CAT tools. Consistency score improves from 64% to 91% in two release cycles.',
+      bad:'No action. German reviewers flag inconsistencies every sprint. Each cycle adds 2 days of rework. The garden has become a wilderness.',
+      tip:'"Treat your termbase like source code: version-controlled, reviewed before each release, owned by a named person. Without an owner, the garden dies."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><path d="M74,18 L88,34 L110,30 L100,50 L114,64 L94,64 L88,84 L74,72 L60,84 L54,64 L34,64 L48,50 L38,30 L60,34 Z" stroke="#c9a84c" stroke-width="0.9" opacity="0.55"/><circle cx="74" cy="44" r="10" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/><line x1="48" y1="100" x2="48" y2="140" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><line x1="62" y1="96" x2="62" y2="140" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><line x1="74" y1="92" x2="74" y2="140" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><line x1="86" y1="96" x2="86" y2="140" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><line x1="100" y1="100" x2="100" y2="140" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><line x1="42" y1="112" x2="52" y2="108" stroke="#c9a84c" stroke-width="0.6" opacity="0.35"/><line x1="56" y1="108" x2="66" y2="104" stroke="#c9a84c" stroke-width="0.6" opacity="0.35"/><line x1="68" y1="104" x2="78" y2="100" stroke="#c9a84c" stroke-width="0.6" opacity="0.35"/></svg>`
+  },
+  {
+    roman:'VII', stage:'mgmt', imgFile:'hierophant.jpg', bgColor:'#08031c',
+    arcanaTitle:'The Hierophant',
+    mystical:'The Guild Master',
+    real:'Vendor Management & LSP Briefing',
+    tarotCard:'The Hierophant \u2014 Major Arcana V',
+    tarotMeaning:'The Hierophant sits between two pillars and raises his hand in the sign of esoteric benediction. Two monks kneel before him. He is the keeper of institutional knowledge \u2014 the bridge between the divine order and those who carry it out. He teaches through ceremony, ritual, and the transmission of tradition.',
+    oracle:'Before the first word crosses the language barrier, the Guild Master has already spoken. The briefing is the ceremony. The glossary is the canon. The SLA is the covenant. Without the Hierophant\'s transmission, the monks guess \u2014 and guessing in twelve languages is expensive.',
+    def:'Vendor management covers the full LSP lifecycle: RFP selection, rate negotiation, onboarding, project briefing, KPI monitoring, and structured feedback loops. The briefing document is the single most important thing a PM produces \u2014 it determines translation quality before the first segment is opened.',
+    pm:'Quality ceiling is set by vendor relationships, not just vendor selection. Great PMs invest in the briefing document, run kick-off calls for complex projects, and close feedback loops so LQA errors translate into linguist improvement.',
+    tags:['RFP / RFQ','SLA Definition','LSP Onboarding','Preferred Vendor List','Briefing Document','KPI Monitoring'],
+    example:{
+      scenario:'<strong>A gaming studio</strong> launches an RPG into 9 languages. The PM writes a 12-page briefing: game lore glossary, character voice profiles, tone guidelines (\u201cgritty medieval, no modern slang\u201d), cultural adaptation notes.',
+      good:'Translators understand the world before opening a single file. Day-1 delivery passes LQA at 97%. French and German communities call the localization \u201cnative-feeling.\u201d',
+      bad:'PM sends source files with no brief. Tone guessed. Fantasy terms translated literally. Italian community creates a Reddit thread mocking \u201cthe worst RPG localization of 2024.\u201d',
+      tip:'"Your briefing document is the most leveraged 4 hours you will spend on any project. The Hierophant does not skip the ceremony. Neither should you."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><rect x="16" y="24" width="22" height="126" stroke="#a897d8" stroke-width="1" opacity="0.55"/><rect x="110" y="24" width="22" height="126" stroke="#c9a84c" stroke-width="1" opacity="0.55"/><path d="M38,24 Q74,10 110,24" stroke="#c9a84c" stroke-width="0.9" opacity="0.45"/><circle cx="74" cy="50" r="10" stroke="#c9a84c" stroke-width="0.8" opacity="0.45"/><line x1="74" y1="60" x2="74" y2="90" stroke="#c9a84c" stroke-width="1" opacity="0.4"/><line x1="74" y1="72" x2="60" y2="82" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><line x1="74" y1="72" x2="88" y2="82" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><ellipse cx="52" cy="110" rx="10" ry="14" stroke="#a897d8" stroke-width="0.7" opacity="0.4"/><ellipse cx="96" cy="110" rx="10" ry="14" stroke="#a897d8" stroke-width="0.7" opacity="0.4"/><line x1="58" y1="46" x2="90" y2="46" stroke="#c9a84c" stroke-width="0.7" opacity="0.35"/><line x1="62" y1="40" x2="86" y2="40" stroke="#c9a84c" stroke-width="0.7" opacity="0.35"/><line x1="66" y1="34" x2="82" y2="34" stroke="#c9a84c" stroke-width="0.7" opacity="0.35"/></svg>`
+  },
+  {
+    roman:'VIII', stage:'mgmt', imgFile:'justice.jpg', bgColor:'#060218',
+    arcanaTitle:'Justice',
+    mystical:'The Trial of Languages',
+    real:'Localization Testing (In-context Review)',
+    tarotCard:'Justice \u2014 Major Arcana XI',
+    tarotMeaning:'The figure sits between pillars with a sword raised in the right hand and scales balanced in the left. There is no mercy here, only exactness. Every word is weighed. Every defect is measured against a standard. The scales do not lie, and the sword does not hesitate.',
+    oracle:'The Trial of Languages weighs each string in the balance of its context. What was correct in the translation memory may be wrong in the UI. What passed in the spreadsheet may overflow the button. The scales must be held \u2014 not at the end of the project, but at every gate along the way.',
+    def:'Localization testing validates translated content in its actual UI environment: checking for linguistic accuracy in context, functional correctness (encoding, broken links), cosmetic defects (text overflow, font rendering), and cultural appropriateness. It catches issues that CAT-tool review cannot \u2014 because context is everything.',
+    pm:'PMs who integrate testing into sprints rather than treating it as a final gate ship faster with fewer regressions. Mapping bug severity to release-blocking criteria is a PM responsibility, not QA\'s alone.',
+    tags:['Functional QA','In-context Review','Bug Severity Matrix','Screenshot Review','Regression Testing','Release Criteria'],
+    example:{
+      scenario:'<strong>A mobile banking app</strong> releases in Japanese. The PM embeds a 2-day in-context review into every 2-week sprint rather than a final 5-day gate before launch.',
+      good:'Font rendering issues caught in sprint 3, fixed in sprint 4. Japanese number formatting verified. Zero P1 bugs at launch. App Store rating in Japan: 4.7 stars.',
+      bad:'Testing left to the final week. 23 critical bugs filed. Launch delayed 2 weeks. Engineering, product, and localization all working weekends. \u20ac18,000 in emergency costs.',
+      tip:'"Build the severity matrix before sprint 1. What is a showstopper? What is cosmetic? Who signs off on each tier? The scales must be calibrated before the trial begins."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><line x1="74" y1="20" x2="74" y2="150" stroke="#c9a84c" stroke-width="1.2" opacity="0.55"/><line x1="34" y1="52" x2="114" y2="52" stroke="#c9a84c" stroke-width="1" opacity="0.55"/><line x1="34" y1="52" x2="34" y2="52" stroke="#c9a84c" stroke-width="0.8" opacity="0.4"/><path d="M34,52 L24,80 L44,80 Z" stroke="#c9a84c" stroke-width="0.8" fill="rgba(201,168,76,0.06)" opacity="0.55"/><path d="M114,52 L104,80 L124,80 Z" stroke="#c9a84c" stroke-width="0.8" fill="rgba(168,151,216,0.06)" opacity="0.55"/><line x1="34" y1="52" x2="74" y2="44" stroke="#c9a84c" stroke-width="0.7" stroke-dasharray="3 2" opacity="0.4"/><line x1="114" y1="52" x2="74" y2="44" stroke="#c9a84c" stroke-width="0.7" stroke-dasharray="3 2" opacity="0.4"/><circle cx="74" cy="40" r="5" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/><polygon points="68,22 74,12 80,22" stroke="#c9a84c" stroke-width="0.8" fill="none" opacity="0.5"/></svg>`
+  },
+  {
+    roman:'IX', stage:'mgmt', imgFile:'world.jpg', bgColor:'#05021a',
+    arcanaTitle:'The World',
+    mystical:'The Crossing of Worlds',
+    real:'Cultural Adaptation & Transcreation',
+    tarotCard:'The World \u2014 Major Arcana XXI',
+    tarotMeaning:'A dancing figure at the centre of a laurel wreath, the four creatures of the evangelists at each corner \u2014 eagle, lion, bull, man. The World is the completion of the Great Work. Every element in balance. Every corner of creation acknowledged. This is what it means to be truly global.',
+    oracle:'The Crossing is the final mystery: to carry meaning \u2014 not words \u2014 across the boundary of language and culture. The dancer at the centre knows that a campaign that conquers London may wound Tokyo, and that the heart of the message must arrive in the target tongue, not merely its garments.',
+    def:'Cultural adaptation ensures content resonates authentically \u2014 adapting idioms, humour, metaphors, colour symbolism, imagery, and local conventions. Transcreation is the creative extreme: recreating marketing copy to achieve the same emotional effect in the target culture, even if not a single word translates literally.',
+    pm:'Transcreation is the highest-value, highest-skill service in the localization spectrum. PMs who write transcreation briefs that capture emotional intent \u2014 not just linguistic form \u2014 unlock creative results that literal translation never achieves.',
+    tags:['Transcreation Brief','Cultural Consulting','Back-translation','Hreflang','Local SEO','Market Adaptation'],
+    example:{
+      scenario:'<strong>A sportswear brand</strong> launches \u201cDefy the Limits\u201d across 14 markets. The PM writes a transcreation brief: core emotion (defiance + triumph), target audience (18\u201325 urban athletes), banned phrases, 3 approved back-translations per market.',
+      good:'Japanese team creates \u201c\u9650\u754c\u3092\u5857\u308a\u66ff\u3048\u308d\u201d (Rewrite the limits) \u2014 culturally resonant. The campaign outperforms the English benchmark by 18% in Japan.',
+      bad:'Tagline sent as a translation job. Literal Korean translation reads \u201cDisobey the rules\u201d \u2014 misaligned and risky in a compliance-sensitive market.',
+      tip:'"A transcreation brief is a creative brief. Include: the emotional effect you want, what the brand is NOT, examples of good and bad tone. You are the creative director of a global story."'
+    },
+    svg:`<svg viewBox="0 0 148 162" fill="none"><ellipse cx="74" cy="82" rx="52" ry="66" stroke="#c9a84c" stroke-width="1" opacity="0.5"/><ellipse cx="74" cy="82" rx="42" ry="54" stroke="#c9a84c" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.35"/><circle cx="74" cy="58" r="8" stroke="#a897d8" stroke-width="0.8" opacity="0.5"/><line x1="74" y1="66" x2="74" y2="92" stroke="#a897d8" stroke-width="1" opacity="0.45"/><line x1="74" y1="76" x2="62" y2="86" stroke="#a897d8" stroke-width="0.9" opacity="0.45"/><line x1="74" y1="76" x2="86" y2="86" stroke="#a897d8" stroke-width="0.9" opacity="0.45"/><line x1="74" y1="92" x2="66" y2="106" stroke="#a897d8" stroke-width="0.9" opacity="0.45"/><line x1="74" y1="92" x2="82" y2="106" stroke="#a897d8" stroke-width="0.9" opacity="0.45"/><circle cx="28" cy="30" r="6" stroke="#c9a84c" stroke-width="0.7" opacity="0.4"/><circle cx="120" cy="30" r="6" stroke="#c9a84c" stroke-width="0.7" opacity="0.4"/><circle cx="28" cy="134" r="6" stroke="#c9a84c" stroke-width="0.7" opacity="0.4"/><circle cx="120" cy="134" r="6" stroke="#c9a84c" stroke-width="0.7" opacity="0.4"/></svg>`
+  }
+];
+
+/* ── Grid ── */
+const ROWS = [
+  { label:'Stage I \u2014 Linguistic Arts',         cards:[0,1,2] },
+  { label:'Stage II \u2014 Technical Process',      cards:[3,4,5] },
+  { label:'Stage III \u2014 Management & Delivery', cards:[6,7,8] }
+];
+
+let flippedCount = 0, activeIdx = null;
+
+function buildGrid(){
+  const grid = document.getElementById('cardsGrid');
+  const prog = document.getElementById('progressRow');
+  grid.innerHTML = '';
+  prog.innerHTML = '';
+  flippedCount = 0;
+  activeIdx = null;
+  document.getElementById('detailPanel').classList.remove('visible');
+  document.getElementById('completeMsg').classList.remove('show');
+
+  CARDS.forEach((_,i)=>{
+    const p = document.createElement('div');
+    p.className = 'pip';
+    p.id = 'pip-'+i;
+    prog.appendChild(p);
+  });
+
+  ROWS.forEach(row=>{
+    const lbl = document.createElement('div');
+    lbl.className = 'stage-row-label';
+    lbl.textContent = row.label;
+    grid.appendChild(lbl);
+
+    row.cards.forEach(i=>{
+      const c = CARDS[i], st = ST[c.stage];
+      const slot = document.createElement('div');
+      slot.className = 'card-slot';
+      slot.style.setProperty('--delay', i*0.22+'s');
+
+      const artHTML = `<div class="cf-art" id="art-${i}">
+        <img src="images/${c.imgFile}" alt="${c.arcanaTitle}" loading="lazy"
+             onload="this.closest('.cf-art').classList.add('has-img')"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+        <span style="display:none">${c.svg}</span>
+      </div>`;
+
+      slot.innerHTML = `
+        <div class="card-inner">
+          <div class="card-face card-back">
+            <div class="cb-frame"></div>
+            <div class="cb-corner tl"></div>
+            <div class="cb-corner tr"></div>
+            <div class="cb-corner bl"></div>
+            <div class="cb-corner br"></div>
+            ${SIGILS[i]}
+            <div class="cb-roman">${c.roman}</div>
+            <div class="cb-whisper">Touch to reveal</div>
+          </div>
+          <div class="card-face card-front" style="--art-glow:${st.glow};background:${c.bgColor}">
+            <div class="cf-top">
+              <span class="cf-roman">${c.roman}</span>
+              <span class="cf-arcana-name">${c.arcanaTitle}</span>
+            </div>
+            ${artHTML}
+            <div class="cf-bottom">
+              <div class="cf-mystical">${c.mystical}</div>
+              <div class="cf-real">${c.real}</div>
+            </div>
+          </div>
+        </div>`;
+
+      slot.addEventListener('click', ()=>reveal(slot,i));
+      grid.appendChild(slot);
+    });
+  });
+}
+
+function reveal(slot,i){
+  document.querySelectorAll('.card-slot').forEach(s=>s.classList.remove('active-card'));
+  slot.classList.add('active-card');
+  const wasFlipped = slot.classList.contains('flipped');
+  if(!wasFlipped){
+    slot.classList.add('flipped');
+    document.getElementById('pip-'+i).classList.add('lit');
+    flippedCount++;
+    if(flippedCount === CARDS.length){
+      setTimeout(()=>document.getElementById('completeMsg').classList.add('show'),1400);
+    }
+  }
+  setTimeout(()=>showDetail(i), wasFlipped ? 0 : 440);
+}
+
+function showDetail(i){
+  const c = CARDS[i], st = ST[c.stage];
+  activeIdx = i;
+
+  document.getElementById('dStripe').style.background = st.stripe;
+  document.getElementById('dRoman').textContent = 'Arcana '+c.roman;
+
+  const stEl = document.getElementById('dStage');
+  stEl.textContent = st.label;
+  stEl.style.cssText = `color:${st.color};border-color:${st.color}44;background:${st.color}14`;
+
+  document.getElementById('dArcanaTitle').textContent = c.arcanaTitle;
+  document.getElementById('dName').textContent = c.mystical;
+  document.getElementById('dReal').textContent = c.real;
+  document.getElementById('tarotCardName').textContent = c.tarotCard;
+  document.getElementById('tarotMeaning').textContent = c.tarotMeaning;
+  document.getElementById('tarotSigil').innerHTML = SIGILS[i]
+    .replace(/class="[^"]*"/, '').replace(/width="[^"]*"/, '').replace(/height="[^"]*"/, '');
+  document.getElementById('dOracle').textContent = c.oracle;
+  document.getElementById('dDef').textContent = c.def;
+  document.getElementById('dPm').textContent = c.pm;
+  document.getElementById('dTags').innerHTML = c.tags.map(t=>`<span class="d-tag">${t}</span>`).join('');
+
+  const panel = document.getElementById('detailPanel');
+  panel.classList.remove('visible');
+  void panel.offsetWidth;
+  panel.classList.add('visible');
+  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+}
+
+function openModal(){
+  if(activeIdx===null) return;
+  const c = CARDS[activeIdx], st = ST[c.stage], ex = c.example;
+
+  document.getElementById('mStripe').style.background = st.stripe;
+  document.getElementById('mEyebrow').textContent = `Arcana ${c.roman} \u00b7 ${c.arcanaTitle} \u00b7 Real-Life Scenario`;
+  document.getElementById('mTitle').textContent = c.mystical;
+  document.getElementById('mSub').textContent = c.real;
+  document.getElementById('mScenario').innerHTML = ex.scenario;
+  document.getElementById('mGood').textContent = ex.good;
+  document.getElementById('mBad').textContent = ex.bad;
+  document.getElementById('mTip').textContent = ex.tip;
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeOutside(e){
+  if(e.target===document.getElementById('modalOverlay')) closeModal();
+}
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+function resetSpread(){ buildGrid(); }
+
+buildGrid();
+</script>
 </body>
 </html>

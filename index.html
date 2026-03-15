@@ -2,34 +2,272 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Localization Oracle</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="page page--cover">
-  <div class="bg"></div>
-  <div class="particles" aria-hidden="true"></div>
-  <div class="petalLayer" id="petalLayer" aria-hidden="true"></div>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --deep: #070216;
+      --surface: #100828;
+      --gold: #c9a84c;
+      --gold-lt: #e8c97a;
+      --gold-dim: #7a6030;
+      --gold-faint: rgba(201,168,76,0.12);
+      --parch: #f0e6cc;
+      --parch-dim: rgba(240,230,204,0.5);
+      --mist: #9b8fd4;
+      --div: rgba(201,168,76,0.18);
+    }
 
-  <div class="cornerCandles" aria-hidden="true">
-    <div class="candle candle--tl"><div class="flame"></div></div>
-    <div class="candle candle--tr"><div class="flame"></div></div>
-    <div class="candle candle--bl"><div class="flame"></div></div>
-    <div class="candle candle--br"><div class="flame"></div></div>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--deep);
+      overflow-x: hidden;
+      font-family: 'Raleway', sans-serif;
+    }
+
+    /* Star canvas */
+    #starCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Main wrapper */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    /* Inner content */
+    .inner {
+      max-width: 560px;
+      width: 100%;
+    }
+
+    /* Ornament line */
+    .ornament {
+      font-size: 13px;
+      color: var(--gold-dim);
+      letter-spacing: 0.6em;
+      opacity: 0.55;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Main heading */
+    h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(22px, 5vw, 42px);
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Subheading */
+    .subheading {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      color: var(--parch-dim);
+      font-size: clamp(13px, 2vw, 17px);
+      margin-bottom: 2rem;
+    }
+
+    /* Divider */
+    .divider {
+      position: relative;
+      width: 100%;
+      margin: 0 auto 2rem;
+      height: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: rgba(201,168,76,0.25);
+      transform: translateY(-50%);
+    }
+
+    .divider::after {
+      content: '\2746';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--deep);
+      padding: 0 12px;
+      color: var(--gold-dim);
+      font-size: 12px;
+    }
+
+    /* Atmospheric paragraph */
+    .atmosphere {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      color: var(--parch-dim);
+      font-size: clamp(14px, 1.8vw, 16px);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    /* CTA button */
+    @keyframes cardGlow {
+      0%, 100% { box-shadow: 0 0 0 rgba(201,168,76,0); }
+      50%       { box-shadow: 0 0 24px rgba(201,168,76,0.2); }
+    }
+
+    .cta {
+      display: inline-block;
+      font-family: 'Raleway', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.5);
+      border-radius: 8px;
+      padding: 14px 36px;
+      background: transparent;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+      animation: cardGlow 3s infinite ease-in-out 1s;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta:hover {
+      background: rgba(201,168,76,0.1);
+      border-color: var(--gold);
+      box-shadow: 0 0 24px rgba(201,168,76,0.15);
+    }
+
+    /* Whisper text */
+    .whisper {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      color: rgba(201,168,76,0.28);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="starCanvas" aria-hidden="true"></canvas>
+
+  <div class="wrapper">
+    <div class="inner">
+
+      <p class="ornament">&#10022; &#10022; &#10022;</p>
+
+      <h1>The Localization Oracle</h1>
+
+      <p class="subheading">Nine Cards Revealing the Hidden Craft of Localization Project Management</p>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <p class="atmosphere">Step closer. Not every journey across the world begins with ships or planes. Some begin quietly &#8212; with words waiting to cross languages. Tonight, the cards will reveal the hidden craft.</p>
+
+      <a class="cta" href="spread.html">Consult the Cards</a>
+
+      <p class="whisper">The cards rarely reveal their meaning to those who rush.</p>
+
+    </div>
   </div>
 
-  <main class="centerStage">
-    <section class="heroCard" aria-label="Cover">
-      <p class="kicker">Nine Cards Revealing the Hidden Craft of Localization Project Management</p>
-      <h1 class="title">The Localization Oracle</h1>
-      <p class="lead">Step closer.</p>
-      <p class="lead">Not every journey across the world begins with ships or planes. Some begin quietly — with words waiting to cross languages.</p>
-      <p class="lead">Tonight, the cards will reveal the hidden craft.</p>
-      <a class="btn btn--gold" id="beginReading" href="spread.html">Consult the Cards</a>
-      <p class="lore coverWhisper">The cards rarely reveal their meaning to those who rush.</p>
-    </section>
-  </main>
+  <script>
+    (function () {
+      var canvas = document.getElementById('starCanvas');
+      var ctx = canvas.getContext('2d');
+      var stars = [];
+      var startTime = performance.now();
 
-  <script src="script.js"></script>
+      function initStars() {
+        stars = [];
+        var w = canvas.width;
+        var h = canvas.height;
+        for (var i = 0; i < 180; i++) {
+          stars.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            radius: 0.2 + Math.random() * 1.3,
+            opacity: 0.07 + Math.random() * 0.60,
+            speed: 0.02 + Math.random() * 0.13,
+            twinkleOffset: Math.random() * Math.PI * 2,
+            gold: Math.random() < 0.07
+          });
+        }
+      }
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initStars();
+      }
+
+      function animate(now) {
+        var time = now - startTime;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (var i = 0; i < stars.length; i++) {
+          var s = stars[i];
+          var modulated = 0.4 + 0.6 * Math.sin(time * 0.0009 + s.twinkleOffset);
+          var alpha = s.opacity * modulated;
+
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+
+          if (s.gold) {
+            ctx.fillStyle = 'rgba(201,168,76,' + (alpha * 0.7).toFixed(3) + ')';
+          } else {
+            ctx.fillStyle = 'rgba(232,220,198,' + alpha.toFixed(3) + ')';
+          }
+
+          ctx.fill();
+
+          s.y -= s.speed;
+          if (s.y < -2) {
+            s.y = canvas.height + 2;
+            s.x = Math.random() * canvas.width;
+          }
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(animate);
+    })();
+  </script>
+
 </body>
 </html>
