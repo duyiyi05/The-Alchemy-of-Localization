@@ -250,17 +250,7 @@ function seedDust(container, count = 34) {
   const rail = document.getElementById("arcanaRail");
   const closing = document.getElementById("closingScene");
   const closingDust = closing?.querySelector(".magic-dust");
-  const closingCandles = document.getElementById("closingCandles");
-  const candleWhisper = document.getElementById("candleWhisper");
-  const hiddenPrelude = document.getElementById("hiddenPrelude");
-  const hiddenCard = document.getElementById("hiddenCard");
-  const hiddenCardNote = document.getElementById("hiddenCardNote");
-  const finalReading = document.getElementById("finalReading");
-  const finalCards = document.getElementById("finalCards");
-  const closingPetals = document.getElementById("closingPetals");
-  const finalLastWhisper = document.getElementById("finalLastWhisper");
-  const readingCard = document.getElementById("readingCard");
-  const readingHeader = document.querySelector(".readingHeader");
+  const oracleCard = document.getElementById("oracleCard");
 
   let lens = "tarot";
   let hiddenSequenceStarted = false;
@@ -379,53 +369,18 @@ function seedDust(container, count = 34) {
       return;
     }
 
-    startHiddenSequence();
-  });
-
-
-  hiddenCard?.addEventListener("click", () => {
-    if (hiddenCardOpened) return;
-    hiddenCardOpened = true;
-
-    if (candleWhisper) {
-      candleWhisper.textContent = "Strange… this card was not part of the original spread.";
-    }
-
-    hiddenCard.classList.add("is-flipping");
+    closing.hidden = false;
+    seedDust(closingDust);
+    requestAnimationFrame(() => closing.classList.add("is-revealed"));
+    setTimeout(() => closing.classList.add("is-text-visible"), 520);
     setTimeout(() => {
-      hiddenCard.classList.add("is-opened");
-      if (hiddenCardNote) hiddenCardNote.hidden = false;
-      buildFinalCards();
-      if (finalLastWhisper) {
-        finalLastWhisper.hidden = false;
-        requestAnimationFrame(() => finalLastWhisper.classList.add("is-visible"));
+      if (oracleCard) {
+        oracleCard.hidden = false;
+        closing.classList.add("is-oracle-visible");
       }
-      if (finalReading) {
-        finalReading.hidden = false;
-        setTimeout(() => {
-          finalLastWhisper?.classList.remove("is-visible");
-          requestAnimationFrame(() => finalReading.classList.add("is-visible"));
-        }, 1100);
-      }
-      closing?.setAttribute("data-phase", "complete");
-      document.body.classList.remove("is-reading-quiet");
-      readingCard?.classList.remove("is-quiet");
-      readingHeader?.classList.remove("is-quiet");
-      rail?.classList.remove("is-quiet");
-      if (petalTimer) {
-        clearInterval(petalTimer);
-        petalTimer = null;
-      }
-    }, 760);
-  });
-
-  closingCandles?.addEventListener("click", (event) => {
-    if (!event.target.closest(".candle")) return;
-    if (!candleWhisper) return;
-    candleWhisper.textContent = "Even the smallest light can guide a message across the world.";
-    setTimeout(() => {
-      candleWhisper.textContent = "";
-    }, 2400);
+    }, 1300);
+    closing.scrollIntoView({ behavior: "smooth", block: "start" });
+    sessionStorage.setItem("readingCompleted", "1");
   });
 
   paint();
